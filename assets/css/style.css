@@ -9,3 +9,12 @@ body{
     padding: 0;
     font-family: 'Open Sans', sans-serif;
 }
+
+.navbar{
+    margin-bottom:5rem;
+    padding:2rem;
+}
+
+.main{
+    padding:2rem;
+}
