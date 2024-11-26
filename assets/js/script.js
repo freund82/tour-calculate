@@ -38,9 +38,13 @@ var y=[]
 
 function removeRow() {
     (row.children.length-1>1)?row.removeChild(row.firstChild):null;
-  for(var i=0; i<row.children.length-1; i++){
-    y.push(cost[i].value)
-    console.log(y)
+}
+
+function calculateTotal() {
+  var sum=0;
+  for (let index = 0; index < cost.length; index++) {
+    sum+=Number(cost[index].value);
   }
+  total.value=sum;
 }
 

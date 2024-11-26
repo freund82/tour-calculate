@@ -42,7 +42,7 @@
             <td scope="row"><input class="date" type="text" style="border:none"></td>
             <td><input type="text" class="accomodation" style="border:none; width:100%"></td>
             <td><input type="text" class="quantity" style="border:none;"></td>
-            <td><input type="text" class="price" style="border:none"></td>
+            <td><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
             <td>
               <button type="button" class="btn btn-primary" onclick="addRow()">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow()" >-</button>
