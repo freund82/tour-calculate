@@ -27,24 +27,31 @@
                     <option value="2">RUB</option>
                   </select>
                 </td>
+                <td></td>
               </tr>
           <tr>
             <th scope="col" style="text-align:center; width:10%">Дата</th>
             <th scope="col" style="text-align:center; width:55%">Услуга</th>
             <th scope="col" style="text-align:center; width:10%">Количество</th>
             <th scope="col" style="text-align:center;">Стоимость</th>
+            <th style="width:15%"></th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row"><input type="text" style="border:none"></th>
-            <td><input type="text" style="border:none"></td>
-            <td><input type="text" style="border:none"></td>
-            <td><input type="text" style="border:none"></td>
+          <tr class="data">
+            <td scope="row"><input class="date" type="text" style="border:none"></td>
+            <td><input type="text" class="accomodation" style="border:none; width:100%"></td>
+            <td><input type="text" class="quantity" style="border:none;"></td>
+            <td><input type="text" class="price" style="border:none"></td>
+            <td>
+              <button type="button" class="btn btn-primary" onclick="addRow()">+</button>
+              <button type="button" class="btn btn-success" onclick="removeRow()" >-</button>
+            </td>
           </tr>
           <tr>
             <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО:</td>
             <td><input type="text" style="border:none"></td>
+            <td></td>
           </tr>
         </tbody>
       </table>
