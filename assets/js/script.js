@@ -14,13 +14,33 @@ newRow.innerHTML = `
 
 var row=document.querySelector(".data").parentNode;
 
+//var cost=[...document.querySelectorAll(".price")];
+var cost=document.querySelectorAll(".price");
+var total=document.querySelector("#total");
+
+
+function calculateTotal() {
+  var sum=0;
+  for (let index = 0; index < cost.length; index++) {
+    sum+=Number(cost[index].value);
+  }
+  total.value=sum;
+}
+
+
 
 function addRow() {
   row.insertAdjacentHTML( "afterbegin", newRow.innerHTML );
   console.log(row.children.length-1)
+  console.log(y)
 }
+var y=[]
 
 function removeRow() {
     (row.children.length-1>1)?row.removeChild(row.firstChild):null;
+  for(var i=0; i<row.children.length-1; i++){
+    y.push(cost[i].value)
+    console.log(y)
+  }
 }
 
