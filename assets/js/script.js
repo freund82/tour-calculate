@@ -1,50 +1,40 @@
-var newRow = document.createElement("tr");
-newRow.innerHTML = `
-<tr class="data">
-    <td scope="row"><input class="date" type="text" style="border:none"></td>
-    <td><input type="text" class="accomodation" style="border:none"></td>
-    <td><input type="text" class="quantity" style="border:none"></td>
-    <td><input type="text" class="price" style="border:none"></td>
-    <td>
-        <button type="button" class="btn btn-primary">+</button>
-        <button type="button" class="btn btn-success" >-</button>
-    </td>
-</tr>
-`;
-
-var row=document.querySelector(".data").parentNode;
-
-//var cost=[...document.querySelectorAll(".price")];
-var cost=document.querySelectorAll(".price");
-var total=document.querySelector("#total");
 
 
-function calculateTotal() {
-  var sum=0;
-  for (let index = 0; index < cost.length; index++) {
-    sum+=Number(cost[index].value);
+
+function addRow(button) {
+  const row = button.parentElement.parentElement.cloneNode(true);
+            document.querySelector('#tourTable tbody').appendChild(row);
+            calculateTotal();
+}
+
+
+function removeRow(button) {
+  const row = button.parentElement.parentElement;
+  if (document.querySelectorAll('#tourTable tbody tr').length > 1) {
+      row.remove();
+      calculateTotal();
   }
-  total.value=sum;
-}
-
-
-
-function addRow() {
-  row.insertAdjacentHTML( "afterbegin", newRow.innerHTML );
-  console.log(row.children.length-1)
-  console.log(y)
-}
-var y=[]
-
-function removeRow() {
-    (row.children.length-1>1)?row.removeChild(row.firstChild):null;
 }
 
 function calculateTotal() {
-  var sum=0;
-  for (let index = 0; index < cost.length; index++) {
-    sum+=Number(cost[index].value);
-  }
-  total.value=sum;
+  
+  let total = 0;
+  const rows = document.querySelectorAll('#tourTable tbody tr');
+  rows.forEach(row => {
+      const price = row.querySelector('td:nth-child(4) input').value*row.querySelector('td:nth-child(3) input').value;
+      total += parseFloat(price) || 0;
+  });
+
+  const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 1;
+  const totalConverted = total * exchangeRate;
+  
+  const currencySelect = document.getElementById('currencySelect');
+  const currency = currencySelect.options[currencySelect.selectedIndex].value;
+
+  //(currency==="RUB")?document.querySelector('#total').remove():null;
+
+  document.getElementById('totalPrice').innerText = `${total} ${currency}`
+  document.getElementById('totalConvertedPrice').innerText = `${totalConverted.toFixed(2)} руб.`;
 }
 
+document.addEventListener('input', calculateTotal);

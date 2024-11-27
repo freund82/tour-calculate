@@ -16,44 +16,51 @@
       <!-- /Header-->
        <!-- Main-->
         <section class="main">
-       <table class="table table-bordered border-primary">
+       <table id="tourTable" class="table table-bordered border-primary">
         <thead>
               <tr>
                 <th colspan="3" style="text-align: right;">Курс</th>
-                <td style="text-align: center;"><input type="text" value="1" style="width: 50px; text-align: center;">
-                  <select aria-label="Default select example">
-                    <option selected value="0">USD</option>
-                    <option value="1">EUR</option>
-                    <option value="2">RUB</option>
+                <td style="text-align: center;"><input type="number" id="exchangeRate" value="1" style="width: 71px; text-align: center;">
+                  <select id="currencySelect" aria-label="Default select example">
+                    <option selected value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="RUB">RUB</option>
                   </select>
                 </td>
                 <td></td>
               </tr>
           <tr>
             <th scope="col" style="text-align:center; width:10%">Дата</th>
-            <th scope="col" style="text-align:center; width:55%">Услуга</th>
-            <th scope="col" style="text-align:center; width:10%">Количество</th>
+            <th scope="col" style="text-align:center; width:70%">Услуга</th>
+            <th scope="col" style="text-align:center; width:5%">Кол.-во/Ночи</th>
             <th scope="col" style="text-align:center;">Стоимость</th>
             <th style="width:15%"></th>
           </tr>
         </thead>
         <tbody>
-          <tr class="data">
+          <tr>
             <td scope="row"><input class="date" type="text" style="border:none"></td>
-            <td><input type="text" class="accomodation" style="border:none; width:100%"></td>
+            <td><textarea rows="1" class="accomodation" style="border:none; width:100%"></textarea></td>
             <td><input type="text" class="quantity" style="border:none;"></td>
             <td><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
             <td>
-              <button type="button" class="btn btn-primary" onclick="addRow()">+</button>
-              <button type="button" class="btn btn-success" onclick="removeRow()" >-</button>
+              <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
+              <button type="button" class="btn btn-success" onclick="removeRow(this)" >-</button>
             </td>
           </tr>
-          <tr>
-            <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО:</td>
-            <td><input id="total" type="text" style="border:none"></td>
+        </tbody>
+        <tfoot>
+          <tr id="total">
+            <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО (у.е.)</td>
+            <td id="totalPrice">0</td>
             <td></td>
           </tr>
-        </tbody>
+          <tr>
+            <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО (руб.)</td>
+            <td id="totalConvertedPrice">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </section>
         <!--/Main-->
