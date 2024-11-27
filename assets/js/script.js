@@ -148,7 +148,7 @@ function loadData(savedData) {
       const newRow = document.createElement('tr');
       newRow.innerHTML = `
           <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${service.date}" style="border:none"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><textarea rows="1" class="accomodation" style="border:none; width:100%">${service.service}</textarea></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${service.service}</textarea></td>
           <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${service.quantity}" style="border:none;"></td>
           <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${service.price}" style="border:none" onchange="calculateTotal()"></td>
           <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
