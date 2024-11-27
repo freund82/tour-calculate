@@ -19,8 +19,18 @@
           <div style="display:flex; height:2rem; align-items: center; margin-bottom:2rem">
             <input id="tourName" type="text" placeholder="Название тура" style="width:20%; font-size: 20px; border:1px solid #0d6efd; margin-right:2rem">
             <button id="saveBtn" type="button" class="btn btn-primary" onclick="save()">Сохранить</button>
-            <button id="loadBtn" type="button" class="btn btn-primary" onclick="loadData()">Загрузить</button>
+            <button id="loadBtn" type="button" class="btn btn-primary" onclick="showModal()">Загрузить</button>
           </div>
+
+          <!--Modal Window-->
+          <div id="toursModal" style="display:none;">
+            <div>
+                <h2>Select a Tour</h2>
+                <ul id="toursList"></ul>
+                <button id="closeModalButton">Close</button>
+            </div>
+        </div>
+        <!--/Modal Window-->
           
        <table id="tourTable" class="table table-bordered border-primary">
         <thead>
