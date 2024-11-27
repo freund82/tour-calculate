@@ -65,13 +65,25 @@ function save() {
   });
 
   const dataToSave = { tourName, services };
-  
-  // Retrieve existing tours and update
-  const existingTours = JSON.parse(localStorage.getItem('toursData')) || [];
-  existingTours.push(dataToSave);
-  localStorage.setItem('toursData', JSON.stringify(existingTours));
 
-  alert(`${tourName} has been saved successfully!`);
+  // Retrieve existing tours
+  const existingTours = JSON.parse(localStorage.getItem('toursData')) || [];
+
+  // Check if a tour with the same name already exists
+  const existingTourIndex = existingTours.findIndex(tour => tour.tourName === tourName);
+  
+  if (existingTourIndex !== -1) {
+      // Update existing tour
+      existingTours[existingTourIndex] = dataToSave; // Replace with new data
+      alert(`${tourName} has been updated successfully!`);
+  } else {
+      // Add new tour
+      existingTours.push(dataToSave);
+      alert(`${tourName} has been saved successfully!`);
+  }
+
+  // Save the updated tours list back to localStorage
+  localStorage.setItem('toursData', JSON.stringify(existingTours));
 }
 
 
