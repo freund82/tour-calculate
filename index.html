@@ -18,24 +18,25 @@
         <section class="main">
           <div style="display:flex; height:2rem; align-items: center; margin-bottom:2rem">
             <input id="tourName" type="text" placeholder="Название тура" style="width:20%; font-size: 20px; border:1px solid #0d6efd; margin-right:2rem">
-            <button id="saveBtn" type="button" class="btn btn-primary" onclick="save()">Сохранить</button>
+            <button id="saveBtn" type="button" class="btn btn-primary" onclick="save()" style="margin-right:1rem">Сохранить</button>
             <button id="loadBtn" type="button" class="btn btn-primary" onclick="showModal()">Загрузить</button>
+            <button id="emailBtn" type="button" class="btn btn-secondary" onclick="copyTableToEmail()">Отправить по Email</button>
           </div>
 
           <!--Modal Window-->
-          <div id="toursModal" style="display:none;">
+          <div id="toursModal">
             <div>
-                <h2>Select a Tour</h2>
+                <h2>Выберите тур</h2>
                 <ul id="toursList"></ul>
-                <button id="closeModalButton">Close</button>
+                <button id="closeModalButton" class="btn btn-primary">Закрыть</button>
             </div>
         </div>
         <!--/Modal Window-->
           
-       <table id="tourTable" class="table table-bordered border-primary">
-        <thead>
-              <tr>
-                <th colspan="3" style="text-align: right;">Курс</th>
+       <table id="tourTable" style="border: 2px solid #0d6efd; border-collapse: collapse;">
+        <thead style="border: 1px solid #0d6efd; border-collapse: collapse;">
+              <tr style="border: 1px solid #0d6efd; border-collapse: collapse; ">
+                <th colspan="3" style="text-align: right; border: 1px solid #0d6efd; border-collapse: collapse;">Курс</th>
                 <td style="text-align: center;"><input type="number" id="exchangeRate" value="1" style="width: 71px; text-align: center;">
                   <select id="currencySelect" aria-label="Default select example">
                     <option selected value="USD">USD</option>
@@ -43,37 +44,37 @@
                     <option value="RUB">RUB</option>
                   </select>
                 </td>
-                <td></td>
+                <td style="border: 1px solid #0d6efd; border-collapse: collapse;"></td>
               </tr>
           <tr>
-            <th scope="col" style="text-align:center; width:10%">Дата</th>
-            <th scope="col" style="text-align:center; width:70%">Услуга</th>
-            <th scope="col" style="text-align:center; width:5%">Кол.-во/Ночи</th>
-            <th scope="col" style="text-align:center;">Стоимость</th>
+            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; width:10%">Дата</th>
+            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; width:70%">Услуга</th>
+            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; width:5%">Кол.-во/Ночи</th>
+            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse;">Стоимость</th>
             <th style="width:15%"></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td scope="row"><input class="date" type="text" style="border:none"></td>
-            <td><textarea rows="1" class="accomodation" style="border:none; width:100%"></textarea></td>
-            <td><input type="text" class="quantity" style="border:none;"></td>
-            <td><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
-            <td>
+            <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" style="border:none"></td>
+            <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><textarea rows="1" class="accomodation" style="border:none; width:100%"></textarea></td>
+            <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" style="border:none;"></td>
+            <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
+            <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
               <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow(this)" >-</button>
             </td>
           </tr>
         </tbody>
         <tfoot>
-          <tr id="total">
-            <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО (у.е.)</td>
-            <td id="totalPrice">0</td>
+          <tr id="total" style="border: 1px solid #0d6efd; border-collapse: collapse;">
+            <td colspan="3" style="text-align: right; font-weight:bold; border: 1px solid #0d6efd; border-collapse: collapse;">ИТОГО (у.е.)</td>
+            <td id="totalPrice" style="border: 1px solid #0d6efd; border-collapse: collapse;">0</td>
             <td></td>
           </tr>
           <tr>
-            <td colspan="3" style="text-align: right; font-weight:bold">ИТОГО (руб.)</td>
-            <td id="totalConvertedPrice">0</td>
+            <td colspan="3" style="text-align: right; font-weight:bold; border: 1px solid #0d6efd; border-collapse: collapse;">ИТОГО (руб.)</td>
+            <td id="totalConvertedPrice" style="border: 1px solid #0d6efd; border-collapse: collapse;">0</td>
             <td></td>
           </tr>
         </tfoot>

@@ -42,7 +42,7 @@ function save() {
   const tourName = document.getElementById('tourName').value.trim();
 
   if (!tourName) {
-      alert("Please enter a valid tour name.");
+      alert("Введите название тура.");
       return;
   }
 
@@ -75,11 +75,11 @@ function save() {
   if (existingTourIndex !== -1) {
       // Update existing tour
       existingTours[existingTourIndex] = dataToSave; // Replace with new data
-      alert(`${tourName} has been updated successfully!`);
+      alert(`${tourName} успешно изменен и сохранен!`);
   } else {
       // Add new tour
       existingTours.push(dataToSave);
-      alert(`${tourName} has been saved successfully!`);
+      alert(`${tourName} успешно сохранен!`);
   }
 
   // Save the updated tours list back to localStorage
@@ -147,11 +147,11 @@ function loadData(savedData) {
 
       const newRow = document.createElement('tr');
       newRow.innerHTML = `
-          <td scope="row"><input class="date" type="text" value="${service.date}" style="border:none"></td>
-          <td><textarea rows="1" class="accomodation" style="border:none; width:100%">${service.service}</textarea></td>
-          <td><input type="text" class="quantity" value="${service.quantity}" style="border:none;"></td>
-          <td><input type="text" class="price" value="${service.price}" style="border:none" onchange="calculateTotal()"></td>
-          <td>
+          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${service.date}" style="border:none"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><textarea rows="1" class="accomodation" style="border:none; width:100%">${service.service}</textarea></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${service.quantity}" style="border:none;"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${service.price}" style="border:none" onchange="calculateTotal()"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
               <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
           </td>
@@ -160,4 +160,39 @@ function loadData(savedData) {
   });
 
   calculateTotal();
+}
+
+/*function copyTableToEmail() {
+  // Get the table element
+  const table = document.getElementById('tourTable');
+  
+  // Create a copy of the inner HTML of the table
+  const tableHTML = table.outerHTML;
+
+  // Create a temporary element to hold the HTML
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = tableHTML;
+
+  // You can now use the tableHTML in an email, or
+  // here is an example of how you could display it in an alert or console
+ console.log(tableHTML); // Just to verify the output
+  
+  // Now let's open the default email client (this is an example)
+  window.open('mailto:?subject=Тур &body=' + encodeURIComponent(tempElement.innerHTML));
+}*/
+
+function copyTableToEmail() {
+  // Get the table element
+  const table = document.getElementById('tourTable');
+  
+  // Create a copy of the inner HTML of the table
+  const tableHTML = table.outerHTML;
+
+  // Copy tableHTML to clipboard
+  navigator.clipboard.writeText(tableHTML).then(() => {
+   alert('Таблица успешно скопирована! Откройте почтовый клиент, создайте письмо, и вставьте код HTML (меню Вставить-HTML');
+    
+  }).catch(err => {
+    alert.error('Не получилось скопировать таблицу: ', err);
+  });
 }
