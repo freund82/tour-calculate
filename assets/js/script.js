@@ -192,7 +192,7 @@ function loadData(savedData) {
   });
 }*/
 
-javascript;
+
 function copyTableToEmail() {
   // Получаем таблицу и значения input элементов
   const table = document.getElementById('tourTable');
