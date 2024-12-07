@@ -8,17 +8,16 @@ function addRow(button) {
   // Insert the new row after the current row
   const tbody = document.querySelector('#tourTable tbody');
   tbody.insertBefore(row, currentRow.nextSibling);
-  
+
   // Optionally, clear any input fields in the cloned row
-  Array.from(row.querySelectorAll('input')).forEach(input => {
+  Array.from(row.querySelectorAll('input')).forEach((input) => {
     input.value = '';
   });
-  Array.from(row.querySelectorAll('textarea')).forEach(textarea => {
-      textarea.value = '';
-    });
+  Array.from(row.querySelectorAll('textarea')).forEach((textarea) => {
+    textarea.value = '';
+  });
   calculateTotal();
 }
-
 
 function removeRow(button) {
   const row = button.parentElement.parentElement;
@@ -207,7 +206,6 @@ function loadData(savedData) {
     alert.error('Не получилось скопировать таблицу: ', err);
   });
 }*/
-
 
 function copyTableToEmail() {
   // Получаем таблицу и значения input элементов
