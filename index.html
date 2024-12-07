@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="icon" href="favicon.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Конструктор тура</title>
 </head>
@@ -35,9 +36,9 @@
           
        <table id="tourTable" style="border: 2px solid #0d6efd; border-collapse: collapse;">
         <thead style="border: 1px solid #0d6efd; border-collapse: collapse;">
-              <tr style="border: 1px solid #0d6efd; border-collapse: collapse; ">
+              <tr style="border: 1px solid #0d6efd; border-collapse: collapse; border-right:2px solid #0d6efd;">
                 <th colspan="3" style="text-align: right; border: 1px solid #0d6efd; border-collapse: collapse;">Курс</th>
-                <td style="text-align: center;"><input type="number" id="exchangeRate" value="1" style="width: 71px; text-align: center;">
+                <td style="text-align: center; border-right:2px solid #0d6efd"><input type="number" id="exchangeRate" value="1" style="width: 71px; text-align: center;">
                   <select id="currencySelect" aria-label="Default select example">
                     <option selected value="USD">USD</option>
                     <option value="EUR">EUR</option>
@@ -50,7 +51,7 @@
             <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse;">Дата</th>
             <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; width:20rem">Услуга</th>
             <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; width:10rem">Кол.-во/Ночи</th>
-            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse;">Стоимость</th>
+            <th scope="col" style="text-align:center; border: 1px solid #0d6efd; border-collapse: collapse; border-right:2px solid #0d6efd">Стоимость</th>
             <th style="width:15%"></th>
           </tr>
         </thead>
@@ -59,7 +60,7 @@
             <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" style="border:none"></td>
             <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;"></textarea></td>
             <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" style="border:none;"></td>
-            <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
+            <td style="border: 1px solid #0d6efd; border-collapse: collapse; border-right:2px solid #0d6efd"><input type="text" class="price" style="border:none" onchange="calculateTotal()"></td>
             <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
               <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow(this)" >-</button>
@@ -69,12 +70,12 @@
         <tfoot>
           <tr id="total" style="border: 1px solid #0d6efd; border-collapse: collapse;">
             <td colspan="3" style="text-align: right; font-weight:bold; border: 1px solid #0d6efd; border-collapse: collapse;">ИТОГО (у.е.)</td>
-            <td id="totalPrice" style="border: 1px solid #0d6efd; border-collapse: collapse;">0</td>
+            <td id="totalPrice" style="border: 1px solid #0d6efd; border-collapse: collapse; border-right:2px solid #0d6efd">0</td>
             <td></td>
           </tr>
           <tr>
             <td colspan="3" style="text-align: right; font-weight:bold; border: 1px solid #0d6efd; border-collapse: collapse;">ИТОГО (руб.)</td>
-            <td id="totalConvertedPrice" style="border: 1px solid #0d6efd; border-collapse: collapse;">0</td>
+            <td id="totalConvertedPrice" style="border: 1px solid #0d6efd; border-collapse: collapse; border-right:2px solid #0d6efd">0</td>
             <td></td>
           </tr>
         </tfoot>
