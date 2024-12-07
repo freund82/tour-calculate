@@ -1,0 +1,45 @@
+:root{
+    html{
+        font-size: 62.5%;
+    }
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar{
+    margin-bottom:5rem;
+    padding:2rem;
+}
+
+.main{
+    padding:2rem;
+}
+
+table{
+    width:60% !important;
+}
+
+
+
+#toursModal{
+    display:none;
+    width:30rem;
+    height:auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#toursList{
+    cursor: pointer;
+}
