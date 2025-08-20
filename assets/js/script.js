@@ -1,3 +1,83 @@
+let db;
+
+// Инициализация базы данных
+async function initDatabase() {
+    try {
+        // Указываем, откуда подгружать wasm-файл
+        const SQL = await initSqlJs({
+            locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/${file}`
+        });
+
+        db = new SQL.Database();
+        
+        // Создаем таблицу расчет инд.тура
+        db.run(`
+            CREATE TABLE IF NOT EXISTS tourCalculate (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tourName TEXT NOT NULL,
+                date TEXT NOT NULL,
+                accomodation TEXT NOT NULL,
+                quantity INTEGER,
+                price INTEGER,
+                exchangeRate INTEGER,
+                currencySelect TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        
+        console.log("База данных инициализирована");
+        /*loadTourCalculate();*/
+        
+    } catch (error) {
+        console.error("Ошибка инициализации БД:", error);
+    }
+}
+
+// Загрузка данных из полей итаблицы на странице сайта
+document.getElementById('saveBtn').addEventListener('click', function(e) {
+    
+  
+    const tourCalculate = {
+        tourName: document.getElementById('tourName').value,
+        date: Array.from(document.getElementsByClassName('date')).map((input) => input.value),
+        accomodation: Array.from(document.getElementsByClassName('accomodation')).map((input) => input.value),
+        quantity: Array.from(document.getElementsByClassName('quantity')).map((input) => input.value),
+        price: Array.from(document.getElementsByClassName('price')).map((input) => input.value),
+        exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
+        currencySelect: document.getElementById('currencySelect').value,
+    };
+    
+    addTourCalculateData(tourCalculate);
+});
+
+// Добавление данных в базу
+function addTourCalculateData(tourCalculate) {
+  console.log(tourCalculate);
+    try {
+        
+
+        // Вставляем данные в базу
+        const stmt = db.prepare(`
+            INSERT INTO tourCalculate (tourName, date, accomodation, quantity, price, exchangeRate, currencySelect) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        
+        stmt.bind([ tourCalculate.tourName, tourCalculate.date, tourCalculate.accomodation, tourCalculate.quantity, tourCalculate.price, tourCalculate.exchangeRate, tourCalculate.currencySelect]);
+        stmt.step();
+        stmt.free();
+        
+        alert('Данные успешно сохранены!', 'success');
+        closeModal();
+        /*loadTourCalculate();*/
+        
+    } catch (error) {
+      alert('Произошла ошибка при сохранении данных.');
+            console.error('Ошибка при сохранении данных', error);
+    }
+}
+
+initDatabase();
+
 function addRow(button) {
   // Clone the row containing the button
   const row = button.parentElement.parentElement.cloneNode(true);
@@ -129,11 +209,14 @@ function showModal() {
   const toursList = document.getElementById('toursList');
   toursList.innerHTML = '';
 
-  const savedData = JSON.parse(localStorage.getItem('toursData')) || [];
+  let savedData = db.exec('SELECT * FROM tourCalculate ORDER BY created_at DESC');
+  savedData = savedData[0].values;
+  console.log(savedData);
+  
 
   savedData.forEach((data) => {
     const tourItem = document.createElement('li');
-    tourItem.innerText = data.tourName;
+    tourItem.innerText = data[1];
     tourItem.onclick = function () {
       loadData(data);
       closeModal();
