@@ -2,16 +2,16 @@ let db;
 
 // Инициализация базы данных
 async function initDatabase() {
-    try {
-        // Указываем, откуда подгружать wasm-файл
-        const SQL = await initSqlJs({
-            locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/${file}`
-        });
+  try {
+    // Указываем, откуда подгружать wasm-файл
+    const SQL = await initSqlJs({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/${file}`,
+    });
 
-        db = new SQL.Database();
-        
-        // Создаем таблицу расчет инд.тура
-        db.run(`
+    db = new SQL.Database();
+
+    // Создаем таблицу расчет инд.тура
+    db.run(`
             CREATE TABLE IF NOT EXISTS tourCalculate (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tourName TEXT NOT NULL,
@@ -24,72 +24,74 @@ async function initDatabase() {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        
-        console.log("База данных инициализирована");
-        /*loadTourCalculate();*/
-        
-    } catch (error) {
-        console.error("Ошибка инициализации БД:", error);
-    }
+
+    console.log('База данных инициализирована');
+    /*loadTourCalculate();*/
+  } catch (error) {
+    console.error('Ошибка инициализации БД:', error);
+  }
 }
 
 // Загрузка данных из полей итаблицы на странице сайта
-document.getElementById('saveBtn').addEventListener('click', function(e) {
-    
-  
-    const tourCalculate = {
-        tourName: document.getElementById('tourName').value,
-        date: Array.from(document.getElementsByClassName('date')).map((input) => input.value),
-        accomodation: Array.from(document.getElementsByClassName('accomodation')).map((input) => input.value),
-        quantity: Array.from(document.getElementsByClassName('quantity')).map((input) => input.value),
-        price: Array.from(document.getElementsByClassName('price')).map((input) => input.value),
-        exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
-        currencySelect: document.getElementById('currencySelect').value,
-    };
-    
-    addTourCalculateData(tourCalculate);
+document.getElementById('saveBtn').addEventListener('click', function (e) {
+  const tourCalculate = {
+    tourName: document.getElementById('tourName').value,
+    date: document.getElementsByClassName('date')[0].value,
+    accomodation: document.getElementsByClassName('accomodation')[0].value,
+    quantity: document.getElementsByClassName('quantity')[0].value,
+    price: document.getElementsByClassName('price')[0].value,
+    exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
+    currencySelect: document.getElementById('currencySelect').value,
+  };
+
+  addTourCalculateData(tourCalculate);
 });
 
 // Добавление данных в базу
 function addTourCalculateData(tourCalculate) {
   console.log(tourCalculate);
-    try {
-        
-
-        // Вставляем данные в базу
-        const stmt = db.prepare(`
+  try {
+    // Вставляем данные в базу
+    const stmt = db.prepare(`
             INSERT INTO tourCalculate (tourName, date, accomodation, quantity, price, exchangeRate, currencySelect) 
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `);
-        
-        stmt.bind([ tourCalculate.tourName, tourCalculate.date, tourCalculate.accomodation, tourCalculate.quantity, tourCalculate.price, tourCalculate.exchangeRate, tourCalculate.currencySelect]);
-        stmt.step();
-        stmt.free();
-        
-        alert('Данные успешно сохранены!', 'success');
-        closeModal();
-        exportDatabase();
-        /*loadTourCalculate();*/
-        
-    } catch (error) {
-      alert('Произошла ошибка при сохранении данных.');
-            console.error('Ошибка при сохранении данных', error);
-    }
+
+    stmt.bind([
+      tourCalculate.tourName,
+      tourCalculate.date,
+      tourCalculate.accomodation,
+      tourCalculate.quantity,
+      tourCalculate.price,
+      tourCalculate.exchangeRate,
+      tourCalculate.currencySelect,
+    ]);
+    stmt.step();
+    stmt.free();
+
+    alert('Данные успешно сохранены!', 'success');
+    closeModal();
+    /*exportDatabase();*/
+    /*loadTourCalculate();*/
+  } catch (error) {
+    alert('Произошла ошибка при сохранении данных.');
+    console.error('Ошибка при сохранении данных', error);
+  }
 }
 
-// Скачивание базы как файла
+/*// Скачивание базы как файла
 function exportDatabase() {
-    const data = db.export();
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'my_database.sqlite';
-    a.click();
-    
-    URL.revokeObjectURL(url);
-}
+  const data = db.export();
+  const blob = new Blob([data], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my_database.sqlite';
+  a.click();
+
+  URL.revokeObjectURL(url);
+}*/
 
 initDatabase();
 
@@ -244,7 +246,6 @@ function showModal() {
   let savedData = db.exec('SELECT * FROM tourCalculate ORDER BY created_at DESC');
   savedData = savedData[0].values;
   console.log(savedData);
-  
 
   savedData.forEach((data) => {
     const tourItem = document.createElement('li');
@@ -260,22 +261,21 @@ function showModal() {
 }
 
 function loadData(savedData) {
-  const { tourName, services } = savedData;
-  document.getElementById('tourName').value = tourName;
+  document.getElementById('tourName').value = savedData[1];
 
   const tbody = document.querySelector('#tourTable tbody');
   tbody.innerHTML = ''; // Clear all rows
-
-  services.forEach((service) => {
-    document.getElementById('exchangeRate').value = service.exchangeRate;
-    document.getElementById('currencySelect').value = service.currency;
+  console.log(savedData);
+  savedData.forEach((service) => {
+    document.getElementById('exchangeRate').value = service[6];
+    document.getElementById('currencySelect').value = service[7];
 
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
-          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${service.date}" style="border:none"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${service.service}</textarea></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${service.quantity}" style="border:none;"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${service.price}" style="border:none" onchange="calculateTotal()"></td>
+          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${service[2]}" style="border:none"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${service[3]}</textarea></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${service[4]}" style="border:none;"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${service[5]}" style="border:none" onchange="calculateTotal()"></td>
           <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
               <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
