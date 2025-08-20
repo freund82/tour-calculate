@@ -68,6 +68,7 @@ function addTourCalculateData(tourCalculate) {
         
         alert('Данные успешно сохранены!', 'success');
         closeModal();
+        exportDatabase();
         /*loadTourCalculate();*/
         
     } catch (error) {
@@ -76,7 +77,38 @@ function addTourCalculateData(tourCalculate) {
     }
 }
 
+// Скачивание базы как файла
+function exportDatabase() {
+    const data = db.export();
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'my_database.sqlite';
+    a.click();
+    
+    URL.revokeObjectURL(url);
+}
+
 initDatabase();
+
+/*//Выгрузка данных из файла
+// Загрузка базы из файла
+function importDatabase(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const arrayBuffer = e.target.result;
+        const uint8Array = new Uint8Array(arrayBuffer);
+        db = new SQL.Database(uint8Array);
+        console.log('✅ База загружена из файла');
+        loadUsers(); // Перезагружаем данные
+    };
+    
+    reader.readAsArrayBuffer(file);
+}*/
 
 function addRow(button) {
   // Clone the row containing the button
