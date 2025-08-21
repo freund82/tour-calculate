@@ -221,7 +221,7 @@ document.addEventListener('input', calculateTotal);
   localStorage.setItem('toursData', JSON.stringify(existingTours));
 }*/
 
-function showModal() {
+/*function showModal() {
   const toursList = document.getElementById('toursList');
   toursList.innerHTML = ''; // Clear previous entries
   const savedData = localStorage.getItem('tourData');
@@ -237,7 +237,7 @@ function showModal() {
     toursList.appendChild(tourItem);
   }
   document.getElementById('toursModal').style.display = 'block';
-}
+}*/
 
 document.getElementById('closeModalButton').onclick = function () {
   closeModal();
