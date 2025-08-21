@@ -247,11 +247,11 @@ function showModal() {
   savedData = savedData[0].values;
   console.log(savedData);
 
-  savedData.forEach((data) => {
+  savedData.map((data) => {
     const tourItem = document.createElement('li');
     tourItem.innerText = data[1];
     tourItem.onclick = function () {
-      loadData(data);
+      loadData(savedData);
       closeModal();
     };
     toursList.appendChild(tourItem);
@@ -261,28 +261,32 @@ function showModal() {
 }
 
 function loadData(savedData) {
-  document.getElementById('tourName').value = savedData[1];
-
+  console.log(savedData);
+  
   const tbody = document.querySelector('#tourTable tbody');
   tbody.innerHTML = ''; // Clear all rows
   console.log(savedData);
-  savedData.forEach((service) => {
-    document.getElementById('exchangeRate').value = service[6];
-    document.getElementById('currencySelect').value = service[7];
 
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${service[2]}" style="border:none"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${service[3]}</textarea></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${service[4]}" style="border:none;"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${service[5]}" style="border:none" onchange="calculateTotal()"></td>
+    savedData.map((data) => {
+      document.getElementById('tourName').value = data[1];
+
+    
+      document.getElementById('exchangeRate').value = data[6];
+      document.getElementById('currencySelect').value = data[7];
+
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${data[2]}" style="border:none"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${data[3]}</textarea></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${data[4]}" style="border:none;"></td>
+          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${data[5]}" style="border:none" onchange="calculateTotal()"></td>
           <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
               <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
               <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
           </td>
       `;
-    tbody.appendChild(newRow);
-  });
+      tbody.appendChild(newRow);
+  })
 
   calculateTotal();
 }
