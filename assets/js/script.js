@@ -32,19 +32,27 @@ async function initDatabase() {
   }
 }
 
-// Загрузка данных из полей итаблицы на странице сайта
+// Загрузка данных из ВСЕХ строк таблицы на странице сайта
 document.getElementById('saveBtn').addEventListener('click', function (e) {
-  const tourCalculate = {
-    tourName: document.getElementById('tourName').value,
-    date: document.getElementsByClassName('date')[0].value,
-    accomodation: document.getElementsByClassName('accomodation')[0].value,
-    quantity: document.getElementsByClassName('quantity')[0].value,
-    price: document.getElementsByClassName('price')[0].value,
-    exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
-    currencySelect: document.getElementById('currencySelect').value,
-  };
+  // Получаем все строки таблицы (исключая заголовок)
+  const rows = document.querySelectorAll('#tourTable tbody tr');
+  
+  // Проходим по всем строкам и сохраняем каждую
+  rows.forEach((row, index) => {
+    const tourCalculate = {
+      tourName: document.getElementById('tourName').value,
+      date: row.querySelector('.date').value,
+      accomodation: row.querySelector('.accomodation').value,
+      quantity: row.querySelector('.quantity').value,
+      price: row.querySelector('.price').value,
+      exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
+      currencySelect: document.getElementById('currencySelect').value,
+    };
 
-  addTourCalculateData(tourCalculate);
+    addTourCalculateData(tourCalculate);
+  });
+  
+  alert('Все данные успешно сохранены!', 'success');
 });
 
 // Добавление данных в базу
@@ -71,7 +79,7 @@ function addTourCalculateData(tourCalculate) {
 
     alert('Данные успешно сохранены!', 'success');
     closeModal();
-    /*exportDatabase();*/
+    exportDatabase();
     /*loadTourCalculate();*/
   } catch (error) {
     alert('Произошла ошибка при сохранении данных.');
@@ -79,7 +87,7 @@ function addTourCalculateData(tourCalculate) {
   }
 }
 
-/*// Скачивание базы как файла
+// Скачивание базы как файла
 function exportDatabase() {
   const data = db.export();
   const blob = new Blob([data], { type: 'application/octet-stream' });
@@ -91,11 +99,11 @@ function exportDatabase() {
   a.click();
 
   URL.revokeObjectURL(url);
-}*/
+}
 
 initDatabase();
 
-/*//Выгрузка данных из файла
+//Выгрузка данных из файла
 // Загрузка базы из файла
 function importDatabase(event) {
     const file = event.target.files[0];
@@ -110,7 +118,7 @@ function importDatabase(event) {
     };
     
     reader.readAsArrayBuffer(file);
-}*/
+}
 
 function addRow(button) {
   // Clone the row containing the button
@@ -165,7 +173,7 @@ function calculateTotal() {
 
 document.addEventListener('input', calculateTotal);
 
-function save() {
+/*function save() {
   const tourName = document.getElementById('tourName').value.trim();
 
   if (!tourName) {
@@ -211,7 +219,7 @@ function save() {
 
   // Save the updated tours list back to localStorage
   localStorage.setItem('toursData', JSON.stringify(existingTours));
-}
+}*/
 
 function showModal() {
   const toursList = document.getElementById('toursList');
@@ -260,33 +268,41 @@ function showModal() {
   document.getElementById('toursModal').style.display = 'block';
 }
 
+// Функция loadData также требует доработки:
 function loadData(savedData) {
   console.log(savedData);
   
   const tbody = document.querySelector('#tourTable tbody');
   tbody.innerHTML = ''; // Clear all rows
-  console.log(savedData);
+  
+  // Устанавливаем общие значения
+  document.getElementById('tourName').value = savedData[0][1];
+  document.getElementById('exchangeRate').value = savedData[0][6];
+  document.getElementById('currencySelect').value = savedData[0][7];
 
-    savedData.map((data) => {
-      document.getElementById('tourName').value = data[1];
-
-    
-      document.getElementById('exchangeRate').value = data[6];
-      document.getElementById('currencySelect').value = data[7];
-
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-          <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;"><input class="date" type="text" value="${data[2]}" style="border:none"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem"><textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${data[3]}</textarea></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="quantity" value="${data[4]}" style="border:none;"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;"><input type="text" class="price" value="${data[5]}" style="border:none" onchange="calculateTotal()"></td>
-          <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
-              <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
-              <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
-          </td>
-      `;
-      tbody.appendChild(newRow);
-  })
+  // Создаем строки для каждой записи
+  savedData.forEach((data) => {
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;">
+          <input class="date" type="text" value="${data[2]}" style="border:none">
+        </td>
+        <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem">
+          <textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${data[3]}</textarea>
+        </td>
+        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
+          <input type="text" class="quantity" value="${data[4]}" style="border:none;">
+        </td>
+        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
+          <input type="text" class="price" value="${data[5]}" style="border:none" onchange="calculateTotal()">
+        </td>
+        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
+            <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
+            <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
+        </td>
+    `;
+    tbody.appendChild(newRow);
+  });
 
   calculateTotal();
 }
