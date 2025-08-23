@@ -37,8 +37,11 @@ function calculateTotal() {
     total += parseFloat(price) || 0;
   });
 
-  const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 1;
+  const exchangeRate =
+    parseFloat(document.getElementById('exchangeRate').value.replace(',', '.')) || 1;
   const totalConverted = total * exchangeRate;
+
+  console.log(exchangeRate);
 
   const currencySelect = document.getElementById('currencySelect');
   const currency = currencySelect.options[currencySelect.selectedIndex].value;
@@ -62,7 +65,8 @@ function save() {
   const rows = document.querySelectorAll('#tourTable tbody tr');
   const services = [];
 
-  const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 1;
+  const exchangeRate =
+    parseFloat(document.getElementById('exchangeRate').value.replace(',', '.')) || 1;
   const currencySelect = document.getElementById('currencySelect');
   const currency = currencySelect.options[currencySelect.selectedIndex].value;
 
@@ -210,7 +214,7 @@ function loadData(savedData) {
 function copyTableToEmail() {
   // Получаем таблицу и значения input элементов
   const table = document.getElementById('tourTable');
-  const exchangeRate = document.getElementById('exchangeRate').value;
+  const exchangeRate = document.getElementById('exchangeRate').value.replace(',', '.');
   const currencySelect = document.getElementById('currencySelect').value;
 
   // Клонируем таблицу для последующих изменений
