@@ -36,7 +36,7 @@ async function initDatabase() {
 document.getElementById('saveBtn').addEventListener('click', function (e) {
   // Получаем все строки таблицы (исключая заголовок)
   const rows = document.querySelectorAll('#tourTable tbody tr');
-  
+
   // Проходим по всем строкам и сохраняем каждую
   rows.forEach((row, index) => {
     const tourCalculate = {
@@ -51,7 +51,7 @@ document.getElementById('saveBtn').addEventListener('click', function (e) {
 
     addTourCalculateData(tourCalculate);
   });
-  
+
   alert('Все данные успешно сохранены!', 'success');
 });
 
@@ -106,18 +106,18 @@ initDatabase();
 //Выгрузка данных из файла
 // Загрузка базы из файла
 function importDatabase(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        const arrayBuffer = e.target.result;
-        const uint8Array = new Uint8Array(arrayBuffer);
-        db = new SQL.Database(uint8Array);
-        console.log('✅ База загружена из файла');
-        loadUsers(); // Перезагружаем данные
-    };
-    
-    reader.readAsArrayBuffer(file);
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const arrayBuffer = e.target.result;
+    const uint8Array = new Uint8Array(arrayBuffer);
+    db = new SQL.Database(uint8Array);
+    console.log('✅ База загружена из файла');
+    loadUsers(); // Перезагружаем данные
+  };
+
+  reader.readAsArrayBuffer(file);
 }
 
 function addRow(button) {
@@ -253,11 +253,11 @@ function showModal() {
 
   let savedData = db.exec('SELECT * FROM tourCalculate ORDER BY created_at DESC');
   savedData = savedData[0].values;
-  console.log(savedData);
+  savedData = savedData.sort((a, b) => a[0] - b[0]);
+  const tourItem = document.createElement('li');
+  tourItem.innerText = savedData[0][1];
 
   savedData.map((data) => {
-    const tourItem = document.createElement('li');
-    tourItem.innerText = data[1];
     tourItem.onclick = function () {
       loadData(savedData);
       closeModal();
@@ -271,10 +271,10 @@ function showModal() {
 // Функция loadData также требует доработки:
 function loadData(savedData) {
   console.log(savedData);
-  
+
   const tbody = document.querySelector('#tourTable tbody');
   tbody.innerHTML = ''; // Clear all rows
-  
+
   // Устанавливаем общие значения
   document.getElementById('tourName').value = savedData[0][1];
   document.getElementById('exchangeRate').value = savedData[0][6];
