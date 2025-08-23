@@ -41,8 +41,6 @@ function calculateTotal() {
     parseFloat(document.getElementById('exchangeRate').value.replace(',', '.')) || 1;
   const totalConverted = total * exchangeRate;
 
-  console.log(exchangeRate);
-
   const currencySelect = document.getElementById('currencySelect');
   const currency = currencySelect.options[currencySelect.selectedIndex].value;
 
