@@ -1,10 +1,11 @@
 let db;
+let SQL;
 
 // Инициализация базы данных
 async function initDatabase() {
   try {
     // Указываем, откуда подгружать wasm-файл
-    const SQL = await initSqlJs({
+    SQL = await initSqlJs({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/sql.js@1.8.0/dist/${file}`,
     });
 
@@ -32,27 +33,39 @@ async function initDatabase() {
   }
 }
 
-// Загрузка данных из ВСЕХ строк таблицы на странице сайта
-document.getElementById('saveBtn').addEventListener('click', function (e) {
-  // Получаем все строки таблицы (исключая заголовок)
+// Сохранение данных (вызывается по кнопке)
+document.getElementById('saveBtn').addEventListener('click', function () {
   const rows = document.querySelectorAll('#tourTable tbody tr');
+  const tourName = document.getElementById('tourName').value.trim();
 
-  // Проходим по всем строкам и сохраняем каждую
-  rows.forEach((row, index) => {
+  if (!tourName) {
+    alert('Введите название тура!');
+    return;
+  }
+
+  let success = true;
+  rows.forEach((row) => {
     const tourCalculate = {
-      tourName: document.getElementById('tourName').value,
+      tourName: tourName,
       date: row.querySelector('.date').value,
       accomodation: row.querySelector('.accomodation').value,
-      quantity: row.querySelector('.quantity').value,
-      price: row.querySelector('.price').value,
-      exchangeRate: parseFloat(document.getElementById('exchangeRate').value),
+      quantity: parseInt(row.querySelector('.quantity').value) || 0,
+      price: parseFloat(row.querySelector('.price').value) || 0,
+      exchangeRate: parseFloat(document.getElementById('exchangeRate').value) || 1,
       currencySelect: document.getElementById('currencySelect').value,
     };
 
-    addTourCalculateData(tourCalculate);
+    if (!addTourCalculateData(tourCalculate)) {
+      success = false;
+    }
   });
 
-  alert('Все данные успешно сохранены!', 'success');
+  if (success) {
+    exportDatabase(); // Автоматически скачиваем обновленный файл
+    alert('Данные успешно сохранены и файл скачан!');
+  } else {
+    alert('Произошли ошибки при сохранении некоторых данных');
+  }
 });
 
 // Добавление данных в базу
@@ -79,23 +92,28 @@ function addTourCalculateData(tourCalculate) {
 
     alert('Данные успешно сохранены!', 'success');
     closeModal();
-    exportDatabase();
-    /*loadTourCalculate();*/
+    return true;
   } catch (error) {
     alert('Произошла ошибка при сохранении данных.');
     console.error('Ошибка при сохранении данных', error);
+    return false;
   }
 }
 
 // Скачивание базы как файла
 function exportDatabase() {
+  if (!db) {
+    alert('Нет данных для экспорта');
+    return;
+  }
+
   const data = db.export();
   const blob = new Blob([data], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'my_database.sqlite';
+  a.download = 'tours_database.sqlite';
   a.click();
 
   URL.revokeObjectURL(url);
@@ -107,16 +125,24 @@ initDatabase();
 // Загрузка базы из файла
 function importDatabase(event) {
   const file = event.target.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
-
   reader.onload = function (e) {
-    const arrayBuffer = e.target.result;
-    const uint8Array = new Uint8Array(arrayBuffer);
-    db = new SQL.Database(uint8Array);
-    console.log('✅ База загружена из файла');
-    loadUsers(); // Перезагружаем данные
-  };
+    try {
+      const arrayBuffer = e.target.result;
+      const uint8Array = new Uint8Array(arrayBuffer);
 
+      // Заменяем текущую БД на загруженную
+      db = new SQL.Database(uint8Array);
+
+      console.log('✅ База загружена из файла');
+      alert('Данные успешно загружены из файла!');
+    } catch (error) {
+      console.error('Ошибка загрузки файла:', error);
+      alert('Ошибка при загрузке файла. Возможно, файл поврежден.');
+    }
+  };
   reader.readAsArrayBuffer(file);
 }
 
@@ -251,61 +277,88 @@ function showModal() {
   const toursList = document.getElementById('toursList');
   toursList.innerHTML = '';
 
-  let savedData = db.exec('SELECT * FROM tourCalculate ORDER BY created_at DESC');
-  savedData = savedData[0].values;
-  savedData = savedData.sort((a, b) => a[0] - b[0]);
-  const tourItem = document.createElement('li');
-  tourItem.innerText = savedData[0][1];
+  try {
+    const result = db.exec(`
+      SELECT DISTINCT tourName 
+      FROM tourCalculate 
+      ORDER BY created_at DESC
+    `);
 
-  savedData.map((data) => {
-    tourItem.onclick = function () {
-      loadData(savedData);
-      closeModal();
-    };
-    toursList.appendChild(tourItem);
-  });
+    if (result.length > 0 && result[0].values.length > 0) {
+      result[0].values.forEach(([tourName]) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.style.cursor = 'pointer';
+        li.textContent = tourName;
+        li.onclick = () => loadTourData(tourName);
+        toursList.appendChild(li);
+      });
+    } else {
+      toursList.innerHTML = '<li class="list-group-item">Нет сохраненных туров</li>';
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки списка туров:', error);
+  }
 
   document.getElementById('toursModal').style.display = 'block';
 }
+// Загрузка данных тура
+function loadTourData(tourName) {
+  try {
+    const result = db.exec(
+      `
+      SELECT * FROM tourCalculate 
+      WHERE tourName = ? 
+      ORDER BY id
+    `,
+      [tourName],
+    );
 
-// Функция loadData также требует доработки:
-function loadData(savedData) {
-  console.log(savedData);
+    if (result.length > 0) {
+      displayTourData(result[0].values);
+      closeModal();
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки тура:', error);
+  }
+}
 
+// Отображение данных тура в таблице
+function displayTourData(data) {
   const tbody = document.querySelector('#tourTable tbody');
-  tbody.innerHTML = ''; // Clear all rows
+  tbody.innerHTML = '';
 
-  // Устанавливаем общие значения
-  document.getElementById('tourName').value = savedData[0][1];
-  document.getElementById('exchangeRate').value = savedData[0][6];
-  document.getElementById('currencySelect').value = savedData[0][7];
+  // Устанавливаем общие значения из первой записи
+  if (data.length > 0) {
+    document.getElementById('tourName').value = data[0][1];
+    document.getElementById('exchangeRate').value = data[0][6];
+    document.getElementById('currencySelect').value = data[0][7];
+  }
 
   // Создаем строки для каждой записи
-  savedData.forEach((data) => {
+  data.forEach((rowData) => {
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
-        <td scope="row" style="border: 1px solid #0d6efd; border-collapse: collapse;">
-          <input class="date" type="text" value="${data[2]}" style="border:none">
-        </td>
-        <td style="border: 1px solid #0d6efd; border-collapse: collapse; width:20rem">
-          <textarea rows="1" class="accomodation" style="border:none; width: 20rem;">${data[3]}</textarea>
-        </td>
-        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
-          <input type="text" class="quantity" value="${data[4]}" style="border:none;">
-        </td>
-        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
-          <input type="text" class="price" value="${data[5]}" style="border:none" onchange="calculateTotal()">
-        </td>
-        <td style="border: 1px solid #0d6efd; border-collapse: collapse;">
-            <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
-            <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
-        </td>
+      <td><input class="date" type="text" value="${rowData[2]}" style="border:none"></td>
+      <td><textarea class="accomodation" style="border:none; width: 20rem;">${rowData[3]}</textarea></td>
+      <td><input type="number" class="quantity" value="${rowData[4]}" style="border:none;"></td>
+      <td><input type="number" class="price" value="${rowData[5]}" style="border:none"></td>
+      <td>
+        <button type="button" class="btn btn-primary" onclick="addRow(this)">+</button>
+        <button type="button" class="btn btn-success" onclick="removeRow(this)">-</button>
+      </td>
     `;
     tbody.appendChild(newRow);
   });
 
   calculateTotal();
 }
+
+function closeModal() {
+  document.getElementById('toursModal').style.display = 'none';
+}
+
+calculateTotal();
 
 /*function copyTableToEmail() {
   // Get the table element
